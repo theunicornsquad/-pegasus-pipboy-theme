@@ -1,0 +1,3 @@
+singleton Resources 1.0 Resources.qml
+singleton Retroid 1.0 Retroid.qml
+singleton Utils 1.0 Utils.qml
