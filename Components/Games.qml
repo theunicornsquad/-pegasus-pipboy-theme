@@ -26,7 +26,7 @@ FocusScope {
 
             if (api.keys.isCancel(event)) {
                 event.accepted = true;
-                goTo('Collections');
+                goTo('collections');
                 return;
             }   
             

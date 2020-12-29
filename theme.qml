@@ -10,8 +10,7 @@ FocusScope {
     width: 640
     height: 480
 
-    property string currentPage: "Collections";
-    property int currentPageIndex: 0;
+    property string currentPage: "collections";
     property int collectionIndex: 0;
     property var currentCollection;
 
@@ -28,7 +27,13 @@ FocusScope {
         }
     ]
 
-
+    /**
+     *  Fonts  
+     */
+    FontLoader {
+        id: mainFont
+            source: "assets/fonts/ChicagoFLF.ttf" 
+    }
 
 
     /**
@@ -40,98 +45,120 @@ FocusScope {
         //asynchronous: false
     }
 
-    /**
-     *  Fonts  
-     */
-    FontLoader {
-        id: mainFont
-            source: "assets/fonts/ChicagoFLF.ttf" 
-    }
-
     TabBar {
        id: tabBar
-       visible: currentPage !== "Games"; 
+       visible: currentPage !== "games"; 
+    }
+
+    /**
+     * Components
+     */
+    Component {
+    id: collectionsView
+        Collections { focus: true }
+    }
+
+    Component {
+    id: recentView
+        Recent { focus: true }
+    }
+
+    Component {
+    id: gamesView
+        Games { focus: true }
+    }
+
+    Component {
+    id: settingsView
+        Settings { focus: true }
+    }
+   
+
+
+    Item{
+    id: content
+
+        Loader  {
+        id: collectionsLoader
+            focus: (currentPage === "collections")
+            active: opacity !== 0
+            opacity: focus ? 1 : 0
+            anchors.fill: parent
+            sourceComponent: collectionsView
+            asynchronous: true
+        }
+        Loader  {
+        id:recentLoader
+            focus: (currentPage === "recent")
+            active: opacity !== 0
+            opacity: focus ? 1 : 0
+            anchors.fill: parent
+            sourceComponent: recentView
+            asynchronous: true
+        }
+        
+        Loader  {
+        id:settingsLoader
+            focus: (currentPage === "settings")
+            active: opacity !== 0
+            opacity: focus ? 1 : 0
+            anchors.fill: parent
+            sourceComponent: settingsView
+            asynchronous: true
+        }
+
+        Loader  {
+        id:gamesLoader
+            focus: (currentPage === "games")
+            active: opacity !== 0
+            opacity: focus ? 1 : 0
+            anchors.fill: parent
+            sourceComponent: gamesView
+            asynchronous: true
+        }
+
     }
 
 
-    Collections {
-      id: collection
-      visible: currentPage === "Collections";
-      focus: visible
-     
-      
-    }
 
-    Recent {
-      id: recent
-      visible: currentPage === "Recent";
-      focus: visible
-    }
-
-    
-    Games {
-      id: gameList
-      visible: currentPage === "Games";
-      focus: visible
-    }
 
     function goTo(page){
-        currentPage = page
+       currentPage = page
+
     }
 
     function goToCurrentPage(index){
         let page = ""
         switch (index) {
             case 0:
-            page = "Collections"
+            page = "collections"
             break;
             case 1:
-            page = "Recent"
+            page = "recent"
             break;
             case 2:
-            page = "Setting"
+            page = "setting"
             break;
             default:
-                page = "Setting"
+                page = "setting"
         }
 
         goTo(page);
     }
 
     function next() {
-        if( currentPageIndex==2 ){
-            currentPageIndex = 0
-        }else{
-            currentPageIndex++
-        }
-        tabBar.setCurrentIndex(currentPageIndex)
-        tabBar.rightAnimate()
-        goToCurrentPage(currentPageIndex)
-
+        showLoading()
+        tabBar.next()
+        goToCurrentPage(tabBar.getCurrentPageIndex())
     }
 
     function prev() {
-        if( currentPageIndex==0 ){
-            currentPageIndex = 2
-        }else{
-            currentPageIndex--
-        }
-        tabBar.setCurrentIndex(currentPageIndex)    
-        tabBar.leftAnimate()
-        goToCurrentPage(currentPageIndex)
+        showLoading()
+        tabBar.prev()
+        goToCurrentPage(tabBar.getCurrentPageIndex())
 
     }
-    /*     
-    Keys.onLeftPressed: {
-          prev()
-          return;  
-
-    }
-    Keys.onRightPressed:{
-          next()
-          return;  
-    }  */
-
+ 
     Keys.onReleased: {
 
         //debug.text = "key = "+event.key
@@ -142,7 +169,7 @@ FocusScope {
         // Debug
         if (event.key == Qt.Key_1) {
           event.accepted = true;
-          showLoading()
+          
           sfxHorizontalPrev.play()
           prev()
           return;   
@@ -150,7 +177,6 @@ FocusScope {
         // Debug
         if (event.key == Qt.Key_2) {
           event.accepted = true;
-          showLoading()
           sfxHorizontalNext.play()
           next()
           return; 
@@ -158,7 +184,6 @@ FocusScope {
 
         if( event.key === Retroid.key_ZL ){
           event.accepted = true;  
-          showLoading()
           sfxHorizontalPrev.play()
           prev()
           return;     
@@ -166,7 +191,6 @@ FocusScope {
 
         if( event.key === Retroid.key_ZR ){
           event.accepted = true;
-          showLoading()
           sfxHorizontalNext.play()
           next()
           return;      
@@ -202,23 +226,6 @@ FocusScope {
     }
      */
     
-
- /**
-    Rectangle {
-        id: rectangle1
-        x: 0
-        y: 0
-        width: parent.width
-        height: parent.height
-        color: "#000000"
-        opacity: 0.49
-
-
-    }
-
-
-
-            */
 
     function showLoading(){
         root.state = "loading-show"

@@ -11,8 +11,8 @@ FocusScope {
     
     Component.onCompleted: {
         console.error("[onCompleted]")
-        console.error(collectionInfo.result.image);
-        //console.error(collectionsMenu.currentItem.shortName);
+        console.error(collectionInfo.data.image);
+        console.error(collectionsMenu.currentItem.shortName);
     }
     
     CollectionInfo{
@@ -29,7 +29,7 @@ FocusScope {
             if (api.keys.isAccept(event)) {
                 currentCollection = collectionsMenu.currentItem
                 collectionIndex = collectionsMenu.menuIndex
-                goTo('Games');
+                goTo('games');
                 return;
             }    
         }                         
@@ -37,7 +37,7 @@ FocusScope {
     }
 
 
-    //TODO: refactoring image source
+    //TODO: refactoring image source and hexadecimal colors
 
 
     Rectangle {
@@ -55,6 +55,8 @@ FocusScope {
                 centerIn: gameCollectionView
             }
             source: "../assets/images/collections/"+collectionInfo.data.image
+            //source: "../assets/images/collections/"+collectionsMenu.currentItem.shortName+".png"
+            
         }
     }
 

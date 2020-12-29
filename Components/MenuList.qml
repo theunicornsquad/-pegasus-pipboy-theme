@@ -40,15 +40,15 @@ FocusScope {
                         width: parent.width
                         visible: (typeof(name) === "undefined" ? title : name).length < root.textMaxLength || !parent.parent.ListView.isCurrentItem
                         id: nameText
-                        text: typeof(name) === "undefined" ? title.substring(0,24) : name.substring(0,24) //TODO refactor the truncate
-                        //text: typeof(name) === "undefined" ? title : name //TODO refactor the truncate
+                        //text: typeof(name) === "undefined" ? title.substring(0,24) : name.substring(0,24) //TODO refactor the truncate
+                        text: typeof(name) === "undefined" ? title : name //TODO refactor the truncate
                         font.capitalization: Font.AllUppercase
-                        color: parent.parent.ListView.isCurrentItem ? "#000000" : "#59D97C"
+                        color: menuItem.ListView.isCurrentItem ? "#000000" : "#59D97C"
                         font.pixelSize: 18
                         font.family: mainFont.name
                         leftPadding: 10
                         rightPadding: 10
-                        //elide: Text.ElideRight
+                        elide: Text.ElideRight
                        
                         
                     }

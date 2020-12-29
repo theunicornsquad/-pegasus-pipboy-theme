@@ -9,6 +9,7 @@ id: root
     property string border: Resources.tab_left 
     property int currentIndex: 0
     property int transitionTime: 2000
+    property int currentPageIndex: 0;
     
     state: "center"
    
@@ -37,8 +38,36 @@ id: root
         }
     }
 
+    function getCurrentPageIndex() {
+        return currentPageIndex;
+    }
+
+
     function setCurrentIndex(index){
         currentIndex = index
+    }
+
+    function next() {
+        if( currentPageIndex==2 ){
+            currentPageIndex = 0
+        }else{
+            currentPageIndex++
+        }
+        setCurrentIndex(currentPageIndex)
+        rightAnimate()
+        
+
+    }
+
+    function prev() {
+        if( currentPageIndex==0 ){
+            currentPageIndex = 2
+        }else{
+            currentPageIndex--
+        }
+        setCurrentIndex(currentPageIndex)
+        leftAnimate()
+        
     }
 
     function leftAnimate(index){

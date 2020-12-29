@@ -13,25 +13,15 @@ id: root
 
     SortFilterProxyModel {
     id: collectionProxyModel
-
         sourceModel: collectionModel
         filters: ValueFilter { roleName: "shortName"; value: query; }
-        //filters: RegExpFilter { roleName: "tags"; pattern: "["+query+"]"; caseSensitivity: Qt.CaseInsensitive;}
-
-
-        
     }
 
     property var data: {
-        console.error("query");
-        console.error(query);
-        console.error("collectionProxyModel.description");
-        console.error(collectionProxyModel.get(0).description);
-        console.error("collectionProxyModel.image");
-        console.error(collectionProxyModel.get(0).image);
         if(collectionProxyModel.count > 0 )
             return collectionProxyModel.get(0)
-        
+        console.error("CollectionInfo.data.image");
+        console.error(collectionProxyModel.get(0).image);
         return {
             image: "",
             description: "",
