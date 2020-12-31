@@ -19,6 +19,7 @@ FocusScope {
         focus: true
         Keys.onPressed: {
             if (api.keys.isAccept(event)) {
+                sfxOK.play()
                 event.accepted = true;
                 gamesMenu.currentItem.launch()
                 return;
@@ -137,7 +138,6 @@ FocusScope {
         Text {
             id: launchGameText
             text: "A:LAUNCH GAME"
-            visible: collectionsMenu.currentItem.games.count>0
             color: "#59D97C"
             font.pixelSize: 15
             font.family: mainFont.name
@@ -148,7 +148,6 @@ FocusScope {
         Text {
             id: loadSaveStateText
             text: "X:LOAD SAVE STATE"
-            visible: collectionsMenu.currentItem.games.count>0
             color: "#59D97C"
             font.pixelSize: 15
             font.family: mainFont.name

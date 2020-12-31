@@ -119,7 +119,6 @@ FocusScope {
     }
 
 
-    
     SoundEffect {
         id: sfxVerticalUp
         source: Resources.sound_rotary_vertical_01

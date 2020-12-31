@@ -20,8 +20,6 @@ id: root
     property var data: {
         if(collectionProxyModel.count > 0 )
             return collectionProxyModel.get(0)
-        console.error("CollectionInfo.data.image");
-        console.error(collectionProxyModel.get(0).image);
         return {
             image: "",
             description: "",

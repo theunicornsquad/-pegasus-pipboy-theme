@@ -35,6 +35,29 @@ FocusScope {
             source: "assets/fonts/ChicagoFLF.ttf" 
     }
 
+    /** 
+     * Sounds 
+     */
+
+    SoundEffect {
+        id: sfxOK
+        source: Resources.sound_OK
+        volume: 1.0
+    }
+    
+    SoundEffect {
+        id: sfxHorizontalPrev
+        source: Resources.sound_rotary_horizontal_01
+        volume: 1.0
+    }
+
+    SoundEffect {
+        id: sfxHorizontalNext
+        source: Resources.sound_rotary_horizontal_02
+        volume: 1.0
+    }
+
+
 
     /**
      *  Background  
@@ -137,23 +160,29 @@ FocusScope {
             page = "recent"
             break;
             case 2:
-            page = "setting"
+            page = "settings"
             break;
             default:
-                page = "setting"
+                page = "settings"
         }
 
         goTo(page);
     }
 
     function next() {
-        showLoading()
+        if(currentPage === "games")
+            return
+        sfxHorizontalPrev.play()
+        //showLoading()
         tabBar.next()
         goToCurrentPage(tabBar.getCurrentPageIndex())
     }
 
     function prev() {
-        showLoading()
+        if(currentPage === "games")
+            return
+        sfxHorizontalNext.play()
+        //showLoading()
         tabBar.prev()
         goToCurrentPage(tabBar.getCurrentPageIndex())
 
@@ -169,29 +198,24 @@ FocusScope {
         // Debug
         if (event.key == Qt.Key_1) {
           event.accepted = true;
-          
-          sfxHorizontalPrev.play()
           prev()
           return;   
         }
         // Debug
         if (event.key == Qt.Key_2) {
           event.accepted = true;
-          sfxHorizontalNext.play()
           next()
           return; 
         }
 
         if( event.key === Retroid.key_ZL ){
           event.accepted = true;  
-          sfxHorizontalPrev.play()
           prev()
           return;     
         }
 
         if( event.key === Retroid.key_ZR ){
           event.accepted = true;
-          sfxHorizontalNext.play()
           next()
           return;      
         }
@@ -199,19 +223,7 @@ FocusScope {
     }
 
 
-    //Sounds
 
-    SoundEffect {
-        id: sfxHorizontalPrev
-        source: Resources.sound_rotary_horizontal_01
-        volume: 1.0
-    }
-
-    SoundEffect {
-        id: sfxHorizontalNext
-        source: Resources.sound_rotary_horizontal_02
-        volume: 1.0
-    }
 
 
     /**
@@ -234,7 +246,7 @@ FocusScope {
 
     Timer {
         id: timerHidden
-        interval: 300
+        interval: 500 //300
         running: false
         repeat: false
         onTriggered: {
@@ -242,15 +254,37 @@ FocusScope {
         }
     }
 
+    /**
     RecursiveBlur {
     id:loading    
         anchors.fill: root
         source: root
         width: parent.width
         height: parent.height
-        loops: 7
-        radius: 4.5
+        loops: 1
+        radius: 8.5
         visible: false;
+
     }
+    
+    FastBlur {
+    id: loading
+        anchors.fill: root
+        source: root
+        radius: 32
+    }
+
+    */
+
+    GaussianBlur {
+    id: loading
+        visible: false;
+        anchors.fill: root
+        source: root
+        radius: 8
+        samples: 80
+    }
+
+
     
 }

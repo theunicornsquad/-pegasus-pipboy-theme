@@ -18,5 +18,7 @@ QtObject {
 
     readonly property string sound_rotary_vertical_01: "../assets/sounds/UI_PipBoy_RotaryVertical_01.wav";
     readonly property string sound_rotary_vertical_03: "../assets/sounds/UI_PipBoy_RotaryVertical_03.wav";
-    
+    readonly property string sound_boot_sequence_A: "assets/sounds/UI_PipBoy_BootSequence_A.wav";
+
+    readonly property string sound_OK: "assets/sounds/UI_Pipboy_OK.wav";
 }    

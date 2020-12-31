@@ -1,4 +1,5 @@
 import QtQuick 2.8
+import QtGraphicalEffects 1.12
 import "../Common"
 import "../Model"
 import "../Lists"
@@ -7,41 +8,41 @@ import "../Lists"
 FocusScope {
     id: root
     focus: true    
-    property int textMaxLength: 20;
-    
-    Component.onCompleted: {
-        console.error("[onCompleted]")
-        console.error(collectionInfo.result.image);
-        //console.error(collectionsMenu.currentItem.shortName);
+
+    LastPlayedGames {
+        id: lastPlayedGames
     }
-    
-    CollectionInfo{
-        id: collectionInfo
-        query: collectionsMenu.currentItem.shortName
+
+    Component.onCompleted: {
+        console.error("[Recent][onCompleted]")
     }
 
 
     MenuList{
-        id: collectionsMenu
-        model: api.collections
+        id: recentMenu
+        model: lastPlayedGames.data
         focus: true
         Keys.onPressed: {
             if (api.keys.isAccept(event)) {
-                currentCollection = collectionsMenu.currentItem
-                collectionIndex = collectionsMenu.menuIndex
-                goTo('Games');
+                sfxOK.play()
+                event.accepted = true;
+                recentMenu.currentItem.launch()
                 return;
-            }    
-        }                         
+            }   
+
+            if (api.keys.isCancel(event)) {
+                event.accepted = true;
+                goTo('recent');
+                return;
+            }   
+            
+        }                      
             
     }
 
 
-    //TODO: refactoring image source and hexadecimal colors
-
-
-    Rectangle {
-    id: gameCollectionView
+   Rectangle {
+    id: gameView
         //border.color: "#59D97C"
         //border.width: 3
         color: "transparent"
@@ -50,16 +51,58 @@ FocusScope {
         width: 300
         height: 240
         Image {
-            id: gameCollectionImage
+            id: gameViewImage
             anchors { 
-                centerIn: gameCollectionView
+                centerIn: gameView
             }
-            source: "../assets/images/collections/"+collectionInfo.data.image
+            height: 200
+            fillMode: Image.PreserveAspectFit
+            source: recentMenu.currentItem.assets.boxFront
+            smooth: true
+            visible: false
         }
+
+        ShaderEffect {
+            id: gameViewImageShader
+            anchors { 
+                centerIn: gameView
+            }
+            width: gameViewImage.width; height: gameViewImage.height
+            property variant src: gameViewImage
+            vertexShader: "
+                uniform highp mat4 qt_Matrix;
+                attribute highp vec4 qt_Vertex;
+                attribute highp vec2 qt_MultiTexCoord0;
+                varying highp vec2 coord;
+                void main() {
+                    coord = qt_MultiTexCoord0;
+                    gl_Position = qt_Matrix * qt_Vertex;
+                }"
+            fragmentShader: "
+                varying highp vec2 coord;
+                uniform sampler2D src;
+                uniform lowp float qt_Opacity;
+                void main() {
+                    lowp vec4 tex = texture2D(src, coord);
+                    gl_FragColor = vec4(vec3(dot(tex.rgb,
+                                        vec3(0.344, 0.5, 0.156))),
+                                            tex.a) * qt_Opacity;
+                }"
+        }
+        
+        ColorOverlay {
+            anchors.fill: gameViewImageShader
+            source: gameViewImageShader
+            //color: "#8000FF"
+            color: "#7359D97C"
+        }
+        
     }
 
+
+
     Rectangle {
-        id: collectionContentBox
+        id: gameContentBox
         x: 320
         y: 305
         width: 300
@@ -68,19 +111,23 @@ FocusScope {
         border.color: "#59D97C"
         border.width: 3
         radius: 0
+
+
+
         Text {
-            id: title
-            text: "["+collectionsMenu.currentItem.name+"]"
+            id: system
+            text: "["+recentMenu.currentItem.collections.get(0).name+"]"
+            visible: (recentMenu.currentItem.title)
             font.capitalization: Font.AllUppercase
             color: "#59D97C"
             font.pixelSize: 15
             font.family: mainFont.name
             padding: 5
         }
+
         Text {
-            id: year
-            visible: collectionInfo.data.year
-            text: "[YEAR OF RELEASE]: "+collectionInfo.data.year
+            id: summary
+            text: recentMenu.currentItem.summary
             font.capitalization: Font.AllUppercase
             color: "#59D97C"
             font.pixelSize: 15
@@ -88,22 +135,20 @@ FocusScope {
             padding: 5
             y: 20
         }
+
         Text {
-            id: description
-            text: collectionInfo.data.description
-            font.capitalization: Font.AllUppercase
-            wrapMode: Text.WordWrap
-            width: parent.width-20
+            id: launchGameText
+            text: "A:LAUNCH GAME"
             color: "#59D97C"
             font.pixelSize: 15
             font.family: mainFont.name
             padding: 5
-            y: 40
+            y: 92
         }
+
         Text {
-            id: listCount
-            text: "No. Of ROMS: "+collectionsMenu.currentItem.games.count
-            visible: collectionsMenu.currentItem.games.count>0
+            id: loadSaveStateText
+            text: "X:LOAD SAVE STATE"
             color: "#59D97C"
             font.pixelSize: 15
             font.family: mainFont.name
@@ -114,18 +159,11 @@ FocusScope {
 
 
     // Input bar
-    Rectangle 
-    {
-        id: inputBar
-        anchors.fill: parent
-        color: "transparent"
-        Image {
-            x: 140
-            y: 210
-            id: inputBarImage
-            source: Resources.input_bar
-        }
+    Image {
+        id: inputBarImage
+        x: 320
+        y: 450
+        source: Resources.input_bar_games
     }
-
     
 }    

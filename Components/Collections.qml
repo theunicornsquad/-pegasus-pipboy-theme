@@ -7,7 +7,6 @@ import "../Lists"
 FocusScope {
     id: root
     focus: true    
-    property int textMaxLength: 20;
     
     Component.onCompleted: {
         console.error("[onCompleted]")
@@ -27,6 +26,7 @@ FocusScope {
         focus: true
         Keys.onPressed: {
             if (api.keys.isAccept(event)) {
+                sfxOK.play()
                 currentCollection = collectionsMenu.currentItem
                 collectionIndex = collectionsMenu.menuIndex
                 goTo('games');

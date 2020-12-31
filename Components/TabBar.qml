@@ -8,7 +8,6 @@ id: root
     property string switcher: Resources.tab_switcher
     property string border: Resources.tab_left 
     property int currentIndex: 0
-    property int transitionTime: 2000
     property int currentPageIndex: 0;
     
     state: "center"
@@ -30,7 +29,7 @@ id: root
 
     Timer {
         id: timeSwitch
-        interval: 400
+        interval: 400 
         running: false
         repeat: false
         onTriggered: {
